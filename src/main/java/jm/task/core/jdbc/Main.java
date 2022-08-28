@@ -17,8 +17,5 @@ public class Main {
         userService.getAllUsers();
         userService.cleanUsersTable();
         userService.dropUsersTable();
-
-
-
     }
 }
