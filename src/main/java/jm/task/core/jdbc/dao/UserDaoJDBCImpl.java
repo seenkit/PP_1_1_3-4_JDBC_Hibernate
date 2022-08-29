@@ -6,7 +6,6 @@ import jm.task.core.jdbc.util.Util;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,16 +15,17 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void createUsersTable() {
-        try (Statement statement = Util.getConnection().createStatement()) {
-            statement.executeUpdate("create table if not exists Users(id bigint primary key auto_increment, name VARCHAR(45), lastName VARCHAR(45), age INT)");
+        try (PreparedStatement preparedStatement = Util.getConnection()
+                .prepareStatement("create table if not exists Users(id bigint primary key auto_increment, name VARCHAR(45), lastName VARCHAR(45), age INT)")) {
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     public void dropUsersTable() {
-        try (Statement statement = Util.getConnection().createStatement()) {
-            statement.executeUpdate("drop table if exists Users");
+        try (PreparedStatement preparedStatement = Util.getConnection().prepareStatement("drop table if exists Users")) {
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -53,8 +53,8 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
-        try (Statement statement = Util.getConnection().createStatement()) {
-            ResultSet resultSet = statement.executeQuery("select * from Users");
+        try (PreparedStatement preparedStatement = Util.getConnection().prepareStatement("select * from Users")) {
+            ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 User user = new User(resultSet.getString("name"), resultSet.getString("lastName"),
                         resultSet.getByte("age"));
@@ -68,8 +68,8 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void cleanUsersTable() {
-        try (Statement statement = Util.getConnection().createStatement()) {
-            statement.executeUpdate("delete from Users");
+        try (PreparedStatement preparedStatement = Util.getConnection().prepareStatement("delete from Users")) {
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
